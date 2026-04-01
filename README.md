@@ -37,7 +37,7 @@ http://localhost:8082
 
 ## Screenshot
 
-![Log Analyzer](screenshot.png)
+![Log Analyzer](Screenshot.png)
 
 ## About
 

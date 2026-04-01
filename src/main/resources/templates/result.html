@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Analyzer - Sonuç</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #0f1117; color: #e0e0e0; padding: 2rem; }
+        .header { margin-bottom: 2rem; }
+        h1 { font-size: 1.5rem; color: #ffffff; margin-bottom: 0.25rem; }
+        .subtitle { color: #888; font-size: 0.9rem; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: #1a1d27; border-radius: 12px; padding: 1.25rem; border: 1px solid #2a2d3a; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: bold; margin-bottom: 0.25rem; }
+        .stat-label { font-size: 0.85rem; color: #888; }
+        .error-num { color: #f87171; }
+        .warn-num { color: #fbbf24; }
+        .info-num { color: #4ade80; }
+        .section { background: #1a1d27; border-radius: 12px; padding: 1.25rem; border: 1px solid #2a2d3a; margin-bottom: 1rem; }
+        .section h2 { font-size: 1rem; margin-bottom: 1rem; color: #ffffff; }
+        .log-line { font-family: monospace; font-size: 0.8rem; color: #f87171; background: #2a1a1a; padding: 0.5rem; border-radius: 6px; margin-bottom: 0.5rem; word-break: break-all; }
+        .hour-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+        .hour-label { font-size: 0.85rem; color: #888; min-width: 50px; }
+        .hour-bar-wrap { flex: 1; background: #2a2d3a; border-radius: 4px; height: 8px; }
+        .hour-bar { height: 8px; border-radius: 4px; background: #f87171; }
+        .hour-count { font-size: 0.85rem; color: #f87171; min-width: 30px; text-align: right; }
+        .back-btn { display: inline-block; margin-top: 1rem; padding: 0.6rem 1.5rem; background: #2a2d3a; color: #e0e0e0; border-radius: 8px; text-decoration: none; font-size: 0.9rem; }
+        .back-btn:hover { background: #3a3d4a; }
+        .error-box { background: #2a1a1a; border: 1px solid #f87171; border-radius: 8px; padding: 1rem; color: #f87171; }
+        .empty { color: #555; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Log Analyzer — Sonuç</h1>
+    <p class="subtitle" th:text="${filename}"></p>
+</div>
+
+<div th:if="${error}" class="error-box" th:text="${error}"></div>
+
+<div th:if="${report}">
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number error-num" th:text="${report.errorCount()}"></div>
+            <div class="stat-label">ERROR</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number warn-num" th:text="${report.warningCount()}"></div>
+            <div class="stat-label">WARNING</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number info-num" th:text="${report.infoCount()}"></div>
+            <div class="stat-label">INFO</div>
+        </div>
+    </div>
+
+    <div class="section" th:if="${!report.hourlyErrors().isEmpty()}">
+        <h2>Saate göre hata dağılımı</h2>
+        <div th:each="entry : ${report.hourlyErrors()}">
+            <div class="hour-row">
+                <span class="hour-label" th:text="${entry.key}"></span>
+                <div class="hour-bar-wrap">
+                    <div class="hour-bar" th:style="'width:' + ${entry.value * 10} + 'px; max-width: 100%;'"></div>
+                </div>
+                <span class="hour-count" th:text="${entry.value}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Son hatalar</h2>
+        <div th:if="${report.recentErrors().isEmpty()}" class="empty">Hata bulunamadı.</div>
+        <div th:each="line : ${report.recentErrors()}" class="log-line" th:text="${line}"></div>
+    </div>
+</div>
+
+<a href="/" class="back-btn">← Yeni dosya analiz et</a>
+</body>
+</html>

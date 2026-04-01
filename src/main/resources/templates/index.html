@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Analyzer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #0f1117; color: #e0e0e0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: #1a1d27; border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 500px; border: 1px solid #2a2d3a; }
+        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #ffffff; }
+        .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 2rem; }
+        .upload-area { border: 2px dashed #2a2d3a; border-radius: 12px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; cursor: pointer; transition: border-color 0.2s; }
+        .upload-area:hover { border-color: #4ade80; }
+        .upload-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .upload-text { color: #888; font-size: 0.9rem; }
+        input[type="file"] { display: none; }
+        .file-name { margin-top: 0.75rem; font-size: 0.85rem; color: #4ade80; }
+        .btn { width: 100%; padding: 0.75rem; background: #4ade80; color: #0f1117; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn:hover { background: #22c55e; }
+        .btn:disabled { background: #2a2d3a; color: #555; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Log Analyzer</h1>
+    <p class="subtitle">Log dosyanı yükle, analiz edelim — Ilayda Öztürk</p>
+
+    <form action="/analyze" method="post" enctype="multipart/form-data">
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Tıkla veya dosyayı buraya sürükle</div>
+            <div class="upload-text">.log, .txt dosyaları desteklenir</div>
+            <div class="file-name" id="fileName"></div>
+        </div>
+        <input type="file" id="fileInput" name="file" accept=".log,.txt" onchange="updateFileName(this)">
+        <button type="submit" class="btn" id="submitBtn" disabled>Analiz Et</button>
+    </form>
+</div>
+
+<script>
+    function updateFileName(input) {
+        const fileName = input.files[0]?.name;
+        document.getElementById('fileName').textContent = fileName || '';
+        document.getElementById('submitBtn').disabled = !fileName;
+    }
+</script>
+</body>
+</html>
